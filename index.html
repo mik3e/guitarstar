@@ -19,24 +19,69 @@
   </script>
 </head>
 <body>
-  <h1 id="header-title"></h1>
-  <button onclick="toggleOctaves()">Toggle Octave</button>
+
+  <style>
+    body { 
+      font-family: sans-serif; 
+      text-align: center; 
+      background-color: #fbf1db; /* New background color */
+      color: #333; /* Adjust text color for better contrast */
+    }
+    button { 
+      margin: 5px; 
+      padding: 8px 16px; 
+      font-size: 14px; 
+      background-color: #eac097; /* Complementary button color */
+      color: #000; /* White text for contrast */
+      border: none; 
+      border-radius: 5px; /* Rounded corners */
+      cursor: pointer; 
+    }
+    button:hover { 
+      background-color: #cea583; /* Darker shade for hover effect */
+    }
+    svg { 
+      border: 1px solid #aaa; 
+      margin-top: 10px; 
+    }
+    .fret-label { 
+      font-size: 12px; 
+      fill: black; 
+    }
+    .note { 
+      cursor: pointer; 
+      font-size: 12px; 
+      font-weight: bold; 
+    }
+  </style>  
+
+  <img id="header-image" src="gps.png" alt="Guitar Periodic System" style="width: 300px; height: auto; margin-top: 20px;">
+  <br>
+  <!-- <h1 id="header-title"></h1> -->
+  <!-- <h3>The Audio-Visual Guide to Guitar Notes and Chords</h3> -->
+  <button onclick="toggleOctaves()">Toggle Octaves</button>
   <button onclick="toggleFrequencies()">Toggle Frequencies</button>
   <button onclick="toggleSharps()">Toggle Sharps</button>
-  <svg onclick="playSelectedNotes()" width="24" height="24" style="cursor: pointer; margin: 5px; vertical-align: middle;">
-    <polygon points="0,0 24,12 0,24" fill="black" />
+  <button onclick="toggleFredHighlighting()">Toggle Freds</button>
+
+  <!-- <button onclick="toggleFredHighlighting()" style="font-size: 30px;">𝄞</button> -->
+
+  <svg onclick="playSelectedNotes()" width="34.2" height="34.2" style="cursor: pointer; margin: 7.125px; vertical-align: middle;">
+    <polygon points="0,0 34.2,17.1 0,34.2" fill="black" />
   </svg>
+
   <button onclick="useNoColoring()">Use No Colors</button>
   <button onclick="useNoteColoring()">Use Note Type Colors</button>
   <button onclick="useOctaveColoring()">Use Octave Colors</button>
 
   <br>
     
-  <svg id="fretboard" width="960" height="340"></svg>
+  <svg id="fretboard" width="1100" height="340"></svg>
   
   <!-- Chord input field -->
   <div style="margin-top: 10px;"></div>
-    <input type="text" id="chordInput" placeholder="Enter a chord (e.g. Cmaj, Em7, D#dim, ..)" style="width: 250px;" 
+    <input type="text" id="chordInput" placeholder="Enter a chord (e.g. Cmaj, Em7, D#dim, ..)" 
+           style="width: 250px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px;" 
            onkeypress="if(event.key === 'Enter') highlightChordNotes();">
     <button onclick="highlightChordNotes()">Show Chord Notes</button>
   </div>
@@ -54,9 +99,10 @@
       4: '#FFA07A', // Light Salmon
       5: '#FFD700'  // Gold
     };
-    const numFrets = 12;
+    const numFrets = 15;
     let showOctaves = true;
     let showSharps = true;
+    let isHighlightFreds = false;
     let useOctaveColorsFlag = true;
     let useNoColorsFlag = false;
     let showFrequencies = true;
@@ -67,6 +113,7 @@
         showOctaves,
         showSharps,
         showFrequencies,
+        isHighlightFreds,
         useOctaveColorsFlag,
         useNoColorsFlag,
         selected: Array.from(selected),
@@ -83,6 +130,7 @@
         showOctaves = state.showOctaves ?? true;
         showSharps = state.showSharps ?? true;
         showFrequencies = state.showFrequencies ?? true;
+        isHighlightFreds = state.isHighlightFreds ?? true;
         useOctaveColorsFlag = state.useOctaveColorsFlag ?? true;
         useNoColorsFlag = state.useNoColorsFlag ?? false;
         selected = new Set(state.selected ?? []);
@@ -107,35 +155,67 @@
       });
     }
 
-    // Guitar-like plucked sound using harmonics and envelope
     function playGuitarLikeNote(audioCtx, frequency) {
       const now = audioCtx.currentTime;
-      const duration = 2.5; // seconds
+      const duration = 3.5;
 
-      const gain = audioCtx.createGain();
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(1.0, now + 0.01); // Attack
-      gain.gain.exponentialRampToValueAtTime(0.4, now + 0.2);  // Quick decay
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration); // Release
+      // Master gain with pluck envelope
+      const masterGain = audioCtx.createGain();
+      masterGain.gain.setValueAtTime(0.0001, now);
+      masterGain.gain.exponentialRampToValueAtTime(1.0, now + 0.01); // Attack
+      masterGain.gain.exponentialRampToValueAtTime(0.5, now + 0.3);  // Decay
+      masterGain.gain.exponentialRampToValueAtTime(0.0001, now + duration); // Release
+      masterGain.connect(audioCtx.destination);
 
-      gain.connect(audioCtx.destination);
+      // Lowpass filter to mellow out over time
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(5000, now);
+      filter.frequency.exponentialRampToValueAtTime(800, now + duration);
+      filter.connect(masterGain);
 
-      // Create multiple harmonics to simulate a string
+      // Noise burst for pluck snap
+      const noiseBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.02, audioCtx.sampleRate);
+      const data = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < data.length; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / 100); // Short decay
+      }
+
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = noiseBuffer;
+
+      const noiseGain = audioCtx.createGain();
+      noiseGain.gain.setValueAtTime(0.2, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.02);
+
+      noise.connect(noiseGain).connect(filter);
+      noise.start(now);
+
+      // Create harmonics with dynamic vibrato and panning
       for (let i = 1; i <= 5; i++) {
         const osc = audioCtx.createOscillator();
-        osc.type = i === 1 ? "triangle" : "sine"; // Fundamental stronger
-        osc.frequency.setValueAtTime(frequency * i, now);
+        osc.type = i === 1 ? "triangle" : "sine";
+        const harmonicFreq = frequency * i;
+        osc.frequency.setValueAtTime(harmonicFreq, now);
 
-        // Slight detuning for realism
-        osc.detune.setValueAtTime(Math.random() * 5 - 2.5, now);
+        // Micro pitch vibrato ("string swing")
+        const lfo = audioCtx.createOscillator();
+        lfo.frequency.setValueAtTime(4 + Math.random() * 2, now); // 4–6 Hz
+        const lfoGain = audioCtx.createGain();
+        lfoGain.gain.setValueAtTime(0.5 / i, now); // less swing for higher harmonics
+        lfo.connect(lfoGain).connect(osc.frequency);
+        lfo.start(now);
+        lfo.stop(now + duration);
 
-        // Slight phase delay to avoid harshness
         const partialGain = audioCtx.createGain();
-        partialGain.gain.setValueAtTime(1 / (i * i), now); // diminish harmonics
+        partialGain.gain.setValueAtTime(1 / (i * i), now); // roll off harmonics
 
-        osc.connect(partialGain);
-        partialGain.connect(gain);
+        // Slight stereo spread
+        const panner = new StereoPannerNode(audioCtx, {
+          pan: (Math.random() * 2 - 1) * 0.3
+        });
 
+        osc.connect(partialGain).connect(panner).connect(filter);
         osc.start(now);
         osc.stop(now + duration);
       }
@@ -175,25 +255,47 @@
       return A4_FREQ * Math.pow(2, semitoneDiff / 12);
     }
 
+    function shadeColor(color, percent) {
+      let f = parseInt(color.slice(1), 16),
+      t = percent < 0 ? 0 : 255,
+      p = Math.abs(percent) / 100,
+      R = f >> 16,
+      G = f >> 8 & 0x00FF,
+      B = f & 0x0000FF;
+      return "#" + (
+      0x1000000 +
+      (Math.round((t - R) * p) + R) * 0x10000 +
+      (Math.round((t - G) * p) + G) * 0x100 +
+      (Math.round((t - B) * p) + B)
+      ).toString(16).slice(1);
+    }
+
     function drawFretboard() {
     svg.innerHTML = '';
-    const width = 960, height = 300;
+    const width = 1050, height = 300;
     const cellW = width / (numFrets + 1);
     const cellH = height / 6;
+    const xOffset = 50;
     const fretboard = getFretboard();
-    
+    const highlightedFretNumbers = new Set([0, 3, 5, 7, 9, 12]);
+
     fretboard.forEach((string, row) => {
       const visualRow = row; // 0 (string 1) to 5 (string 6)
       string.forEach((noteObj, col) => {
-        if (col === 0) return; // Skip open string
-        const x = col * cellW;
+        const x = xOffset + col * cellW;
         const y = visualRow * cellH;
         const id = `${col},${row}`;
-        let color = '#eee';
+        const defaultColor = '#ffdab9'; // Peach Puff
+        const naturalNodeColor = '#cea583'; // Pastel Grayish Blue
+        let color = defaultColor;
         if (!useNoColorsFlag) {
-          color = useOctaveColorsFlag
-            ? octaveColors[noteObj.octave] || '#eee'
-            : (naturalNotes.has(noteObj.name) ? '#add8e6' : '#eee');
+          if (useOctaveColorsFlag) {
+            color = octaveColors[noteObj.octave] || defaultColor;
+          } else {
+            if (naturalNotes.has(noteObj.name)){
+              color = naturalNodeColor;
+            }
+          }
         }
 
         const isSelected = selected.has(id);
@@ -202,7 +304,13 @@
         rect.setAttribute("y", y);
         rect.setAttribute("width", cellW);
         rect.setAttribute("height", cellH);
-        rect.setAttribute("fill", isSelected ? "lightgreen" : color);
+        
+        let finalColor = color;
+        // Darken color slightly for highlighted frets
+        if (highlightedFretNumbers.has(col) && isHighlightFreds) {
+          finalColor = shadeColor(color, -35);
+        }
+        rect.setAttribute("fill", isSelected ? "lightgreen" : finalColor);
         rect.setAttribute("stroke", "black");
 
         // Note label (centered vertically)
@@ -255,22 +363,8 @@
       textNote.setAttribute("y", i * cellH + cellH / 2 + 4);
       textNote.setAttribute("text-anchor", "middle");
       textNote.setAttribute("class", "fret-label");
-      textNote.textContent = showOctaves ? `${i + 1} (${note}${octave})` : `${i + 1} (${note})`;
+      textNote.textContent = `${i + 1}`;
       svg.appendChild(textNote);
-
-      // Frequency label (optional) placed below the note label
-      let textFreq = null;
-      if (showFrequencies && (!note.includes('#') || showSharps)) {
-        textFreq = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        textFreq.setAttribute("x", cellW / 2);
-        textFreq.setAttribute("y", i * cellH + cellH / 2 + 16);
-        textFreq.setAttribute("text-anchor", "middle");
-        textFreq.setAttribute("font-size", "10");
-        textFreq.setAttribute("fill", "black");
-        const freq = Math.round(getFrequency(note, octave));
-        textFreq.textContent = `${freq} Hz`;
-        svg.appendChild(textFreq);
-      }
     });
 
     // Add horizontal label: "Strings" (left side, vertical text)
@@ -286,7 +380,7 @@
 
     // Add bottom label: "Freds" (centered under fretboard)
     const fredsLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    fredsLabel.setAttribute("x", width / 2);
+    fredsLabel.setAttribute("x", xOffset+width / 2);
     fredsLabel.setAttribute("y", height + 35);
     fredsLabel.setAttribute("text-anchor", "middle");
     fredsLabel.setAttribute("font-size", "14");
@@ -295,14 +389,19 @@
     svg.appendChild(fredsLabel);
 
     // Fret labels
-    for (let f = 1; f <= numFrets; f++) {
+    for (let f = 0; f <= numFrets; f++) {
       const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      label.setAttribute("x", f * cellW + cellW / 2);
+      label.setAttribute("x", xOffset + f * cellW + cellW / 2);
       label.setAttribute("y", height + 20);
       label.setAttribute("text-anchor", "middle");
       label.setAttribute("class", "fret-label");
+      if (highlightedFretNumbers.has(f) && isHighlightFreds) {
+        label.setAttribute("font-weight", "bold"); // Make the label bold
+        label.setAttribute("stroke", "red"); // Add a blue stroke around the text
+        label.setAttribute("stroke-width", "0.5"); // Set stroke width
+      }
       label.textContent = f;
-      svg.appendChild(label);
+      svg.appendChild(label);      
     }
   }
 
@@ -318,6 +417,12 @@
       drawFretboard();
       saveState();
     }
+
+    function toggleFredHighlighting() {
+      isHighlightFreds = !isHighlightFreds;
+      drawFretboard();
+      saveState();
+    }    
 
     function toggleFrequencies() {
       showFrequencies = !showFrequencies;
@@ -370,7 +475,7 @@
     chord = chord.trim();
     const chordRegex = /^([A-Ga-g]#?)(maj7?|min7?|dur7?|mol7?|dim|aug|sus[24]?|add9|minadd9|7)?$/i;
     const match = chord.match(chordRegex);
-    if (!match) return "Invalid chord expression.";
+    if (!match) return "Invalid Chord";
 
     const rootNote = match[1].toUpperCase();
     let chordType = match[2] ? match[2].toLowerCase() : 'maj';
@@ -423,14 +528,15 @@
         const messageBox = document.createElement("div");
         messageBox.textContent = chordNotes; // Show error message if invalid chord
         messageBox.style.position = "fixed";
-        messageBox.style.top = "270px";
+        messageBox.style.top = "470px";
         messageBox.style.left = "50%";
         messageBox.style.transform = "translateX(-50%)";
-        messageBox.style.backgroundColor = "#f8d7da";
-        messageBox.style.color = "#721c24";
-        messageBox.style.padding = "10px";
-        messageBox.style.border = "1px solid #f5c6cb";
-        messageBox.style.borderRadius = "5px";
+        messageBox.style.backgroundColor = "rgba(255, 77, 77, 0.75)"; // More prominent red color with 25% transparency
+        messageBox.style.color = "#ffffff"; // White text for better contrast
+        messageBox.style.padding = "50px"; // Increased padding for larger size
+        messageBox.style.border = "1px solid rgba(200, 200, 200, 0.75)";
+        messageBox.style.borderRadius = "10px"; // Slightly larger border radius
+        messageBox.style.fontSize = "32px"; // Doubled font size
         messageBox.style.zIndex = "1000";
         document.body.appendChild(messageBox);
 
