@@ -455,6 +455,16 @@
         label.textContent = f;
         svg.appendChild(label);
       }
+
+      // Line between Fret 0 and 1
+      const verticalLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      verticalLine.setAttribute("x1", 115);
+      verticalLine.setAttribute("y1", 0);
+      verticalLine.setAttribute("x2", 115);
+      verticalLine.setAttribute("y2", 300);
+      verticalLine.setAttribute("stroke", "black");
+      verticalLine.setAttribute("stroke-width", "5");
+      svg.appendChild(verticalLine);
     }
 
     function highlightScaleNotes() {
