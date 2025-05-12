@@ -1,14 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title id="page-title"></title>
   <style>
-    body { font-family: sans-serif; text-align: center; }
-    button { margin: 5px; padding: 8px 16px; font-size: 14px; }
-    svg { border: 1px solid #aaa; margin-top: 10px; }
-    .fret-label { font-size: 12px; fill: black; }
-    .note { cursor: pointer; font-size: 12px; font-weight: bold; }
+    body {
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    button {
+      margin: 5px;
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+
+    svg {
+      border: 1px solid #aaa;
+      margin-top: 10px;
+    }
+
+    .fret-label {
+      font-size: 12px;
+      fill: black;
+    }
+
+    .note {
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+    }
   </style>
   <script>
     const appTitle = "Guitar Periodic System";
@@ -18,44 +40,57 @@
     });
   </script>
 </head>
+
 <body>
 
   <style>
-    body { 
-      font-family: sans-serif; 
-      text-align: center; 
-      background-color: #fbf1db; /* New background color */
-      color: #333; /* Adjust text color for better contrast */
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background-color: #fbf1db;
+      /* New background color */
+      color: #333;
+      /* Adjust text color for better contrast */
     }
-    button { 
-      margin: 5px; 
-      padding: 8px 16px; 
-      font-size: 14px; 
-      background-color: #eac097; /* Complementary button color */
-      color: #000; /* White text for contrast */
-      border: none; 
-      border-radius: 5px; /* Rounded corners */
-      cursor: pointer; 
-    }
-    button:hover { 
-      background-color: #cea583; /* Darker shade for hover effect */
-    }
-    svg { 
-      border: 1px solid #aaa; 
-      margin-top: 10px; 
-    }
-    .fret-label { 
-      font-size: 12px; 
-      fill: black; 
-    }
-    .note { 
-      cursor: pointer; 
-      font-size: 12px; 
-      font-weight: bold; 
-    }
-  </style>  
 
-  <img id="header-image" src="gps.png" alt="Guitar Periodic System" style="width: 300px; height: auto; margin-top: 20px;">
+    button {
+      margin: 5px;
+      padding: 8px 16px;
+      font-size: 14px;
+      background-color: #eac097;
+      /* Complementary button color */
+      color: #000;
+      /* White text for contrast */
+      border: none;
+      border-radius: 5px;
+      /* Rounded corners */
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #cea583;
+      /* Darker shade for hover effect */
+    }
+
+    svg {
+      border: 1px solid #aaa;
+      margin-top: 10px;
+    }
+
+    .fret-label {
+      font-size: 12px;
+      fill: black;
+    }
+
+    .note {
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+    }
+  </style>
+
+  <img id="header-image" src="gps.png" alt="Guitar Periodic System"
+    style="width: 300px; height: auto; margin-top: 20px;">
   <br>
   <!-- <h1 id="header-title"></h1> -->
   <!-- <h3>The Audio-Visual Guide to Guitar Notes and Chords</h3> -->
@@ -66,7 +101,8 @@
 
   <!-- <button onclick="toggleFredHighlighting()" style="font-size: 30px;">𝄞</button> -->
 
-  <svg onclick="playSelectedNotes()" width="34.2" height="34.2" style="cursor: pointer; margin: 7.125px; vertical-align: middle;">
+  <svg onclick="playSelectedNotes()" width="34.2" height="34.2"
+    style="cursor: pointer; margin: 7.125px; vertical-align: middle;">
     <polygon points="0,0 34.2,17.1 0,34.2" fill="black" />
   </svg>
 
@@ -75,22 +111,22 @@
   <button onclick="useOctaveColoring()">Use Octave Colors</button>
 
   <br>
-    
+
   <svg id="fretboard" width="1100" height="340"></svg>
-  
+
   <!-- Chord input field -->
   <div style="margin-top: 10px;"></div>
-    <input type="text" id="chordInput" placeholder="Enter a Chord (e.g. Cmaj, Em7, D#dim, ..)" 
-           style="width: 250px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px;" 
-           onkeypress="if(event.key === 'Enter') highlightChordNotes();">
-    <button onclick="highlightChordNotes()">Show Chord Notes</button>
+  <input type="text" id="chordInput" placeholder="Enter a Chord (e.g. Cmaj, Em7, D#dim, ..)"
+    style="width: 250px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px;"
+    onkeypress="if(event.key === 'Enter') highlightChordNotes();">
+  <button onclick="highlightChordNotes()">Show Chord Notes</button>
   </div>
 
   <!-- Scale input field -->
   <div style="margin-top: 10px;">
-    <input type="text" id="scaleInput" placeholder="Enter a Scale(e.g. Cmaj, Amol, ..)" 
-          style="width: 250px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px;" 
-          onkeypress="if(event.key === 'Enter') highlightScaleNotes();">
+    <input type="text" id="scaleInput" placeholder="Enter a Scale(e.g. Cmaj, Amol, ..)"
+      style="width: 250px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px;"
+      onkeypress="if(event.key === 'Enter') highlightScaleNotes();">
     <button onclick="highlightScaleNotes()">Show Scale Notes</button>
   </div>
 
@@ -100,8 +136,8 @@
     const strings = [
       ['E', 4], ['B', 3], ['G', 3], ['D', 3], ['A', 2], ['E', 2]
     ];
-    const noteNames = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-    const naturalNotes = new Set(['C','D','E','F','G','A','B']);
+    const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    const naturalNotes = new Set(['C', 'D', 'E', 'F', 'G', 'A', 'B']);
     const octaveColors = {
       2: '#FFB6C1', // Light Pink
       3: '#20B2AA', // Light Sea Green
@@ -258,7 +294,7 @@
       const A4_INDEX = 9; // A is index 9 in noteNames
       const A4_OCTAVE = 4;
       const A4_FREQ = 440;
-      
+
       const noteIndexVal = noteNames.indexOf(noteName);
       const semitoneDiff = (octave - A4_OCTAVE) * 12 + (noteIndexVal - A4_INDEX);
       return A4_FREQ * Math.pow(2, semitoneDiff / 12);
@@ -266,160 +302,160 @@
 
     function shadeColor(color, percent) {
       let f = parseInt(color.slice(1), 16),
-      t = percent < 0 ? 0 : 255,
-      p = Math.abs(percent) / 100,
-      R = f >> 16,
-      G = f >> 8 & 0x00FF,
-      B = f & 0x0000FF;
+        t = percent < 0 ? 0 : 255,
+        p = Math.abs(percent) / 100,
+        R = f >> 16,
+        G = f >> 8 & 0x00FF,
+        B = f & 0x0000FF;
       return "#" + (
-      0x1000000 +
-      (Math.round((t - R) * p) + R) * 0x10000 +
-      (Math.round((t - G) * p) + G) * 0x100 +
-      (Math.round((t - B) * p) + B)
+        0x1000000 +
+        (Math.round((t - R) * p) + R) * 0x10000 +
+        (Math.round((t - G) * p) + G) * 0x100 +
+        (Math.round((t - B) * p) + B)
       ).toString(16).slice(1);
     }
 
     function drawFretboard() {
-    svg.innerHTML = '';
-    const width = 1050, height = 300;
-    const cellW = width / (numFrets + 1);
-    const cellH = height / 6;
-    const xOffset = 50;
-    const fretboard = getFretboard();
-    const highlightedFretNumbers = new Set([0, 3, 5, 7, 9, 12]);
+      svg.innerHTML = '';
+      const width = 1050, height = 300;
+      const cellW = width / (numFrets + 1);
+      const cellH = height / 6;
+      const xOffset = 50;
+      const fretboard = getFretboard();
+      const highlightedFretNumbers = new Set([0, 3, 5, 7, 9, 12]);
 
-    fretboard.forEach((string, row) => {
-      const visualRow = row; // 0 (string 1) to 5 (string 6)
-      string.forEach((noteObj, col) => {
-        const x = xOffset + col * cellW;
-        const y = visualRow * cellH;
-        const id = `${col},${row}`;
-        const defaultColor = '#ffdab9'; // Peach Puff
-        const naturalNodeColor = '#cea583'; // Pastel Grayish Blue
-        let color = defaultColor;
-        if (!useNoColorsFlag) {
-          if (useOctaveColorsFlag) {
-            color = octaveColors[noteObj.octave] || defaultColor;
-          } else {
-            if (naturalNotes.has(noteObj.name)){
-              color = naturalNodeColor;
+      fretboard.forEach((string, row) => {
+        const visualRow = row; // 0 (string 1) to 5 (string 6)
+        string.forEach((noteObj, col) => {
+          const x = xOffset + col * cellW;
+          const y = visualRow * cellH;
+          const id = `${col},${row}`;
+          const defaultColor = '#ffdab9'; // Peach Puff
+          const naturalNodeColor = '#cea583'; // Pastel Grayish Blue
+          let color = defaultColor;
+          if (!useNoColorsFlag) {
+            if (useOctaveColorsFlag) {
+              color = octaveColors[noteObj.octave] || defaultColor;
+            } else {
+              if (naturalNotes.has(noteObj.name)) {
+                color = naturalNodeColor;
+              }
             }
           }
-        }
 
-        const isSelected = selected.has(id);
-        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        rect.setAttribute("x", x);
-        rect.setAttribute("y", y);
-        rect.setAttribute("width", cellW);
-        rect.setAttribute("height", cellH);
-        
-        let finalColor = color;
-        // Darken color slightly for highlighted frets
-        if (highlightedFretNumbers.has(col) && isHighlightFreds) {
-          finalColor = shadeColor(color, -35);
-        }
-        rect.setAttribute("fill", isSelected ? "lightgreen" : finalColor);
-        rect.setAttribute("stroke", "black");
+          const isSelected = selected.has(id);
+          const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+          rect.setAttribute("x", x);
+          rect.setAttribute("y", y);
+          rect.setAttribute("width", cellW);
+          rect.setAttribute("height", cellH);
+
+          let finalColor = color;
+          // Darken color slightly for highlighted frets
+          if (highlightedFretNumbers.has(col) && isHighlightFreds) {
+            finalColor = shadeColor(color, -35);
+          }
+          rect.setAttribute("fill", isSelected ? "lightgreen" : finalColor);
+          rect.setAttribute("stroke", "black");
+
+          // Note label (centered vertically)
+          const textNote = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          textNote.setAttribute("x", x + cellW / 2);
+          textNote.setAttribute("y", y + cellH / 2 + 4);
+          textNote.setAttribute("text-anchor", "middle");
+          textNote.setAttribute("class", "note");
+          if (noteObj.name === "A" && noteObj.octave === 4) {
+            textNote.setAttribute("fill", "brown");
+            textNote.setAttribute("font-style", "italic");
+          }
+          let labelText = showOctaves ? `${noteObj.name}${noteObj.octave}` : noteObj.name;
+          textNote.textContent = !showSharps && noteObj.name.includes('#') ? '' : labelText;
+
+          // Frequency label (optional) placed below the note label
+          let textFreq = null;
+          if (showFrequencies && (!noteObj.name.includes('#') || showSharps)) {
+            textFreq = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            textFreq.setAttribute("x", x + cellW / 2);
+            textFreq.setAttribute("y", y + cellH / 2 + 16);
+            textFreq.setAttribute("text-anchor", "middle");
+            textFreq.setAttribute("font-size", "10");
+            if (noteObj.name === "A" && noteObj.octave === 4) {
+              textFreq.setAttribute("fill", "brown");
+              textFreq.setAttribute("font-style", "italic");
+            }
+            const freq = Math.round(getFrequency(noteObj.name, noteObj.octave));
+            textFreq.textContent = `${freq} Hz`;
+          }
+
+          rect.addEventListener("click", () => {
+            if (selected.has(id)) selected.delete(id);
+            else selected.add(id);
+            drawFretboard();
+            saveState();
+          });
+          textNote.addEventListener("click", () => {
+            if (selected.has(id)) selected.delete(id);
+            else selected.add(id);
+            drawFretboard();
+            saveState();
+          });
+
+          svg.appendChild(rect);
+          svg.appendChild(textNote);
+          if (textFreq) svg.appendChild(textFreq);
+        });
+      });
+
+      // String labels (1 to 6, top to bottom)
+      strings.forEach(([note, octave], i) => {
 
         // Note label (centered vertically)
         const textNote = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        textNote.setAttribute("x", x + cellW / 2);
-        textNote.setAttribute("y", y + cellH / 2+4);
+        textNote.setAttribute("x", cellW / 2);
+        textNote.setAttribute("y", i * cellH + cellH / 2 + 4);
         textNote.setAttribute("text-anchor", "middle");
-        textNote.setAttribute("class", "note");
-        if (noteObj.name === "A" && noteObj.octave === 4){
-          textNote.setAttribute("fill", "brown");
-          textNote.setAttribute("font-style", "italic");
-        }        
-        let labelText = showOctaves ? `${noteObj.name}${noteObj.octave}` : noteObj.name;
-        textNote.textContent = !showSharps && noteObj.name.includes('#') ? '' : labelText;
-
-        // Frequency label (optional) placed below the note label
-        let textFreq = null;
-        if (showFrequencies && (!noteObj.name.includes('#') || showSharps)) {
-          textFreq = document.createElementNS("http://www.w3.org/2000/svg", "text");
-          textFreq.setAttribute("x", x + cellW / 2);
-          textFreq.setAttribute("y", y + cellH / 2 + 16);
-          textFreq.setAttribute("text-anchor", "middle");
-          textFreq.setAttribute("font-size", "10");
-          if (noteObj.name === "A" && noteObj.octave === 4){
-            textFreq.setAttribute("fill", "brown");
-            textFreq.setAttribute("font-style", "italic");
-          }                
-          const freq = Math.round(getFrequency(noteObj.name, noteObj.octave));
-          textFreq.textContent = `${freq} Hz`;
-        }
-
-        rect.addEventListener("click", () => {
-          if (selected.has(id)) selected.delete(id);
-          else selected.add(id);
-          drawFretboard();
-          saveState();
-        });
-        textNote.addEventListener("click", () => {
-          if (selected.has(id)) selected.delete(id);
-          else selected.add(id);
-          drawFretboard();
-          saveState();
-        });
-
-        svg.appendChild(rect);
+        textNote.setAttribute("class", "fret-label");
+        textNote.textContent = `${i + 1}`;
         svg.appendChild(textNote);
-        if (textFreq) svg.appendChild(textFreq);
       });
-    });
 
-    // String labels (1 to 6, top to bottom)
-    strings.forEach(([note, octave], i) => {
+      // Add horizontal label: "Strings" (left side, vertical text)
+      const stringsLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      stringsLabel.setAttribute("x", -height / 2);
+      stringsLabel.setAttribute("y", 15);
+      stringsLabel.setAttribute("transform", `rotate(-90)`);
+      stringsLabel.setAttribute("text-anchor", "middle");
+      stringsLabel.setAttribute("font-size", "14");
+      stringsLabel.setAttribute("font-weight", "bold");
+      stringsLabel.textContent = "Strings";
+      svg.appendChild(stringsLabel);
 
-      // Note label (centered vertically)
-      const textNote = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      textNote.setAttribute("x", cellW / 2);
-      textNote.setAttribute("y", i * cellH + cellH / 2 + 4);
-      textNote.setAttribute("text-anchor", "middle");
-      textNote.setAttribute("class", "fret-label");
-      textNote.textContent = `${i + 1}`;
-      svg.appendChild(textNote);
-    });
+      // Add bottom label: "Freds" (centered under fretboard)
+      const fredsLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      fredsLabel.setAttribute("x", xOffset + width / 2);
+      fredsLabel.setAttribute("y", height + 35);
+      fredsLabel.setAttribute("text-anchor", "middle");
+      fredsLabel.setAttribute("font-size", "14");
+      fredsLabel.setAttribute("font-weight", "bold");
+      fredsLabel.textContent = "Freds";
+      svg.appendChild(fredsLabel);
 
-    // Add horizontal label: "Strings" (left side, vertical text)
-    const stringsLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    stringsLabel.setAttribute("x", -height / 2);
-    stringsLabel.setAttribute("y", 15);
-    stringsLabel.setAttribute("transform", `rotate(-90)`);
-    stringsLabel.setAttribute("text-anchor", "middle");
-    stringsLabel.setAttribute("font-size", "14");
-    stringsLabel.setAttribute("font-weight", "bold");
-    stringsLabel.textContent = "Strings";
-    svg.appendChild(stringsLabel);
-
-    // Add bottom label: "Freds" (centered under fretboard)
-    const fredsLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    fredsLabel.setAttribute("x", xOffset+width / 2);
-    fredsLabel.setAttribute("y", height + 35);
-    fredsLabel.setAttribute("text-anchor", "middle");
-    fredsLabel.setAttribute("font-size", "14");
-    fredsLabel.setAttribute("font-weight", "bold");
-    fredsLabel.textContent = "Freds";
-    svg.appendChild(fredsLabel);
-
-    // Fret labels
-    for (let f = 0; f <= numFrets; f++) {
-      const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      label.setAttribute("x", xOffset + f * cellW + cellW / 2);
-      label.setAttribute("y", height + 20);
-      label.setAttribute("text-anchor", "middle");
-      label.setAttribute("class", "fret-label");
-      if (highlightedFretNumbers.has(f) && isHighlightFreds) {
-        label.setAttribute("font-weight", "bold"); // Make the label bold
-        label.setAttribute("stroke", "red"); // Add a blue stroke around the text
-        label.setAttribute("stroke-width", "0.5"); // Set stroke width
+      // Fret labels
+      for (let f = 0; f <= numFrets; f++) {
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", xOffset + f * cellW + cellW / 2);
+        label.setAttribute("y", height + 20);
+        label.setAttribute("text-anchor", "middle");
+        label.setAttribute("class", "fret-label");
+        if (highlightedFretNumbers.has(f) && isHighlightFreds) {
+          label.setAttribute("font-weight", "bold"); // Make the label bold
+          label.setAttribute("stroke", "red"); // Add a blue stroke around the text
+          label.setAttribute("stroke-width", "0.5"); // Set stroke width
+        }
+        label.textContent = f;
+        svg.appendChild(label);
       }
-      label.textContent = f;
-      svg.appendChild(label);      
     }
-  }
 
     function highlightScaleNotes() {
       const input = document.getElementById("scaleInput").value.trim();
@@ -480,14 +516,14 @@
       isHighlightFreds = !isHighlightFreds;
       drawFretboard();
       saveState();
-    }    
+    }
 
     function toggleFrequencies() {
       showFrequencies = !showFrequencies;
       drawFretboard();
       saveState();
     }
-    
+
     function useNoColoring() {
       useOctaveColorsFlag = false;
       useNoColorsFlag = true;
@@ -510,55 +546,55 @@
     }
 
     function getChordNotes(chord) {
-    const chordFormulas = {
-      'maj': [0, 4, 7],
-      'min': [0, 3, 7],
-      '7': [0, 4, 7, 10],
-      'maj7': [0, 4, 7, 11],
-      'min7': [0, 3, 7, 10],
-      'dim': [0, 3, 6],
-      'aug': [0, 4, 8],
-      'sus2': [0, 2, 7],
-      'sus4': [0, 5, 7],
-      'add9': [0, 4, 7, 14],
-      'minadd9': [0, 3, 7, 14]
-    };
+      const chordFormulas = {
+        'maj': [0, 4, 7],
+        'min': [0, 3, 7],
+        '7': [0, 4, 7, 10],
+        'maj7': [0, 4, 7, 11],
+        'min7': [0, 3, 7, 10],
+        'dim': [0, 3, 6],
+        'aug': [0, 4, 8],
+        'sus2': [0, 2, 7],
+        'sus4': [0, 5, 7],
+        'add9': [0, 4, 7, 14],
+        'minadd9': [0, 3, 7, 14]
+      };
 
-    const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+      const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
-    function getNotesForChord(root, formula) {
-      return formula.map(interval => notes[(root + interval) % 12]);
+      function getNotesForChord(root, formula) {
+        return formula.map(interval => notes[(root + interval) % 12]);
+      }
+
+      chord = chord.trim();
+      const chordRegex = /^([A-Ga-g]#?)(maj7?|min7?|dur7?|moll7?|dim|aug|sus[24]?|add9|minadd9|7)?$/i;
+      const match = chord.match(chordRegex);
+      if (!match) return "Invalid Chord";
+
+      const rootNote = match[1].toUpperCase();
+      let chordType = match[2] ? match[2].toLowerCase() : 'maj';
+
+      const altNames = {
+        'dur': 'maj',
+        'moll': 'min',
+        'dur7': 'maj7',
+        'moll7': 'min7'
+      };
+      if (altNames[chordType]) {
+        chordType = altNames[chordType];
+      }
+
+      const rootIndex = notes.indexOf(rootNote);
+      if (rootIndex === -1) return "Invalid root note.";
+      if (!chordFormulas[chordType]) return "Invalid chord type.";
+
+      const formula = chordFormulas[chordType];
+      return getNotesForChord(rootIndex, formula);
     }
-
-    chord = chord.trim();
-    const chordRegex = /^([A-Ga-g]#?)(maj7?|min7?|dur7?|moll7?|dim|aug|sus[24]?|add9|minadd9|7)?$/i;
-    const match = chord.match(chordRegex);
-    if (!match) return "Invalid Chord";
-
-    const rootNote = match[1].toUpperCase();
-    let chordType = match[2] ? match[2].toLowerCase() : 'maj';
-
-    const altNames = {
-      'dur': 'maj',
-      'moll': 'min',
-      'dur7': 'maj7',
-      'moll7': 'min7'
-    };
-    if (altNames[chordType]) {
-      chordType = altNames[chordType];
-    }
-
-    const rootIndex = notes.indexOf(rootNote);
-    if (rootIndex === -1) return "Invalid root note.";
-    if (!chordFormulas[chordType]) return "Invalid chord type.";
-
-    const formula = chordFormulas[chordType];
-    return getNotesForChord(rootIndex, formula);
-  }
 
     function highlightChordNotes() {
       const chord = document.getElementById("chordInput").value.trim();
-      
+
       if (chord === "") {
         selected.clear();
         drawFretboard();
@@ -567,11 +603,11 @@
       }
 
       const chordNotes = getChordNotes(chord);
-      
+
       if (Array.isArray(chordNotes)) {
         selected.clear();
         const fretboard = getFretboard();
-        
+
         fretboard.forEach((string, row) => {
           string.forEach((noteObj, col) => {
             if (chordNotes.includes(noteObj.name)) {
@@ -588,24 +624,24 @@
     }
 
     function showMessage(msg) {
-        const messageBox = document.createElement("div");
-        messageBox.textContent = msg;
-        messageBox.style.position = "fixed";
-        messageBox.style.top = "470px";
-        messageBox.style.left = "50%";
-        messageBox.style.transform = "translateX(-50%)";
-        messageBox.style.backgroundColor = "rgba(255, 77, 77, 0.75)"; // More prominent red color with 25% transparency
-        messageBox.style.color = "#ffffff"; // White text for better contrast
-        messageBox.style.padding = "50px"; // Increased padding for larger size
-        messageBox.style.border = "1px solid rgba(200, 200, 200, 0.75)";
-        messageBox.style.borderRadius = "10px"; // Slightly larger border radius
-        messageBox.style.fontSize = "32px"; // Doubled font size
-        messageBox.style.zIndex = "1000";
-        document.body.appendChild(messageBox);
+      const messageBox = document.createElement("div");
+      messageBox.textContent = msg;
+      messageBox.style.position = "fixed";
+      messageBox.style.top = "470px";
+      messageBox.style.left = "50%";
+      messageBox.style.transform = "translateX(-50%)";
+      messageBox.style.backgroundColor = "rgba(255, 77, 77, 0.75)"; // More prominent red color with 25% transparency
+      messageBox.style.color = "#ffffff"; // White text for better contrast
+      messageBox.style.padding = "50px"; // Increased padding for larger size
+      messageBox.style.border = "1px solid rgba(200, 200, 200, 0.75)";
+      messageBox.style.borderRadius = "10px"; // Slightly larger border radius
+      messageBox.style.fontSize = "32px"; // Doubled font size
+      messageBox.style.zIndex = "1000";
+      document.body.appendChild(messageBox);
 
-        setTimeout(() => {
-          document.body.removeChild(messageBox);
-        }, 3000);
+      setTimeout(() => {
+        document.body.removeChild(messageBox);
+      }, 3000);
     }
 
     // Initial rendering
@@ -613,4 +649,5 @@
     drawFretboard();
   </script>
 </body>
+
 </html>
