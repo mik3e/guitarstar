@@ -524,7 +524,7 @@
     }
 
     chord = chord.trim();
-    const chordRegex = /^([A-Ga-g]#?)(maj7?|min7?|dur7?|mol7?|dim|aug|sus[24]?|add9|minadd9|7)?$/i;
+    const chordRegex = /^([A-Ga-g]#?)(maj7?|min7?|dur7?|moll7?|dim|aug|sus[24]?|add9|minadd9|7)?$/i;
     const match = chord.match(chordRegex);
     if (!match) return "Invalid Chord";
 
@@ -533,9 +533,9 @@
 
     const altNames = {
       'dur': 'maj',
-      'mol': 'min',
+      'moll': 'min',
       'dur7': 'maj7',
-      'mol7': 'min7'
+      'moll7': 'min7'
     };
     if (altNames[chordType]) {
       chordType = altNames[chordType];
