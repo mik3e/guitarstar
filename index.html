@@ -457,14 +457,44 @@
       }
 
       // Line between Fret 0 and 1
-      const verticalLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
-      verticalLine.setAttribute("x1", 115);
-      verticalLine.setAttribute("y1", 0);
-      verticalLine.setAttribute("x2", 115);
-      verticalLine.setAttribute("y2", 300);
-      verticalLine.setAttribute("stroke", "black");
-      verticalLine.setAttribute("stroke-width", "5");
-      svg.appendChild(verticalLine);
+      const verticalLine01 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      verticalLine01.setAttribute("x1", 115);
+      verticalLine01.setAttribute("y1", 0);
+      verticalLine01.setAttribute("x2", 115);
+      verticalLine01.setAttribute("y2", 300);
+      verticalLine01.setAttribute("stroke", "black");
+      verticalLine01.setAttribute("stroke-width", "5");
+      svg.appendChild(verticalLine01);
+
+      // Line between Fret 12 and 13
+      const verticalLine1213 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      verticalLine1213.setAttribute("x1", 905);
+      verticalLine1213.setAttribute("y1", 0);
+      verticalLine1213.setAttribute("x2", 905);
+      verticalLine1213.setAttribute("y2", 300);
+      verticalLine1213.setAttribute("stroke", "black");
+      verticalLine1213.setAttribute("stroke-width", "5");
+      svg.appendChild(verticalLine1213);      
+
+      // String End
+      const fullStringLengthLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      fullStringLengthLabel.setAttribute("x", 115);
+      fullStringLengthLabel.setAttribute("y", 335);
+      fullStringLengthLabel.setAttribute("text-anchor", "middle");
+      fullStringLengthLabel.setAttribute("font-size", "10");
+      fullStringLengthLabel.textContent = "Full String Length";
+      fullStringLengthLabel.setAttribute("font-weight", "bold");
+      svg.appendChild(fullStringLengthLabel);
+
+      // Half String Length label
+      const halfStringLengthLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      halfStringLengthLabel.setAttribute("x", 905);
+      halfStringLengthLabel.setAttribute("y", 335);
+      halfStringLengthLabel.setAttribute("text-anchor", "middle");
+      halfStringLengthLabel.setAttribute("font-size", "10");
+      halfStringLengthLabel.textContent = "Half String Length";
+      halfStringLengthLabel.setAttribute("font-weight", "bold");
+      svg.appendChild(halfStringLengthLabel);
     }
 
     function highlightScaleNotes() {
