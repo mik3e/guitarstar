@@ -328,6 +328,9 @@
         textNote.setAttribute("y", y + cellH / 2+4);
         textNote.setAttribute("text-anchor", "middle");
         textNote.setAttribute("class", "note");
+        if (noteObj.name === "A" && noteObj.octave === 4){
+          textNote.setAttribute("fill", "brown");
+        }        
         let labelText = showOctaves ? `${noteObj.name}${noteObj.octave}` : noteObj.name;
         textNote.textContent = !showSharps && noteObj.name.includes('#') ? '' : labelText;
 
@@ -339,7 +342,9 @@
           textFreq.setAttribute("y", y + cellH / 2 + 16);
           textFreq.setAttribute("text-anchor", "middle");
           textFreq.setAttribute("font-size", "10");
-          textFreq.setAttribute("fill", "black");
+          if (noteObj.name === "A" && noteObj.octave === 4){
+            textFreq.setAttribute("fill", "brown");
+          }                
           const freq = Math.round(getFrequency(noteObj.name, noteObj.octave));
           textFreq.textContent = `${freq} Hz`;
         }
