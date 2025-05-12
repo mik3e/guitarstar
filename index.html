@@ -425,7 +425,7 @@
 
       const match = input.toLowerCase().match(/^([a-g](#|b)?)[-\s]*(dur|moll)$/i);
       if (!match) {
-        alert("Please use the format 'C-Dur' or 'A-Moll'");
+        showMessage("Invalid Scale");
         return;
       }
 
@@ -576,8 +576,13 @@
         drawFretboard();
         saveState();
       } else {
+        showMessage(chordNotes);
+      }
+    }
+
+    function showMessage(msg) {
         const messageBox = document.createElement("div");
-        messageBox.textContent = chordNotes; // Show error message if invalid chord
+        messageBox.textContent = msg;
         messageBox.style.position = "fixed";
         messageBox.style.top = "470px";
         messageBox.style.left = "50%";
@@ -594,7 +599,6 @@
         setTimeout(() => {
           document.body.removeChild(messageBox);
         }, 3000);
-      }
     }
 
     // Initial rendering
