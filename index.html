@@ -352,7 +352,16 @@
           if (highlightedFretNumbers.has(col) && isHighlightFreds) {
             finalColor = shadeColor(color, -35);
           }
-          rect.setAttribute("fill", isSelected ? "lightgreen" : finalColor);
+
+          if(isSelected){
+            if(col === 0){
+              finalColor = "turquoise";
+            }else{
+              finalColor = "lightgreen";
+            }
+          }
+          rect.setAttribute("fill", finalColor);
+
           rect.setAttribute("stroke", "black");
 
           // Note label (centered vertically)
@@ -479,7 +488,7 @@
       fullStringLengthLabel.setAttribute("y", 335);
       fullStringLengthLabel.setAttribute("text-anchor", "middle");
       fullStringLengthLabel.setAttribute("font-size", "10");
-      fullStringLengthLabel.textContent = "Full String";
+      fullStringLengthLabel.textContent = "Full Guitar String";
       fullStringLengthLabel.setAttribute("font-weight", "bold");
       svg.appendChild(fullStringLengthLabel);
 
@@ -489,7 +498,7 @@
       halfStringLengthLabel.setAttribute("y", 335);
       halfStringLengthLabel.setAttribute("text-anchor", "middle");
       halfStringLengthLabel.setAttribute("font-size", "10");
-      halfStringLengthLabel.textContent = "Half String";
+      halfStringLengthLabel.textContent = "Half Guitar String";
       halfStringLengthLabel.setAttribute("font-weight", "bold");
       svg.appendChild(halfStringLengthLabel);
     }
