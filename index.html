@@ -134,7 +134,7 @@
     <div style="display: flex; flex-direction: column; align-items: flex-start;">
       <!-- Scale input field -->
       <div style="margin-bottom: 10px;">
-        <input type="text" id="scaleInput" placeholder="Enter a Scale (e.g. Cmaj, Amol, ..)"
+        <input type="text" id="scaleInput" placeholder="Enter a Scale (e.g. Cmaj, Amin, ..)"
           style="width: 300px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;"
           onkeypress="if(event.key === 'Enter') highlightScaleNotes()">
         <button style="width: 150px;" onclick="highlightScaleNotes()">Show Scale</button>
@@ -565,6 +565,55 @@
       saveState();
     }
 
+    function highlightPentatonicNotes() {
+      const input = document.getElementById("pentatonicInput").value.trim();
+
+      if (input === "") {
+      selected.clear();
+      drawFretboard();
+      saveState();
+      return;
+      }
+
+      const pentatonicMap = {
+      'maj': [0, 2, 4, 7, 9],    // Major pentatonic intervals
+      'min': [0, 3, 5, 7, 10],   // Minor pentatonic intervals
+      };
+
+      const match = input.toLowerCase().match(/^([a-g](#|b)?)[-\s]*(dur|moll|maj|min)$/i);
+      if (!match) {
+      showMessage("Invalid Pentatonic");
+      return;
+      }
+
+      const [_, rootRaw, accidental, type] = match;
+      const root = (rootRaw + (accidental || '')).toUpperCase();
+      const intervals = pentatonicMap[type.toLowerCase()];
+      if (!intervals) return;
+
+      const rootIndex = noteNames.indexOf(root);
+      if (rootIndex === -1) {
+      alert(`Unknown note: ${root}`);
+      return;
+      }
+
+      const pentatonicNotes = intervals.map(i => noteNames[(rootIndex + i) % 12]);
+
+      const fretboard = getFretboard();
+      selected.clear();
+      for (let row = 0; row < fretboard.length; row++) {
+      for (let col = 0; col < fretboard[row].length; col++) {
+        const note = fretboard[row][col].name;
+        if (pentatonicNotes.includes(note)) {
+        selected.add(`${col},${row}`);
+        }
+      }
+      }
+
+      drawFretboard();
+      saveState();
+    }
+
     function highlightScaleNotes() {
       const input = document.getElementById("scaleInput").value.trim();
 
@@ -580,7 +629,7 @@
         'moll': [0, 2, 3, 5, 7, 8, 10],   // Natural minor scale intervals
       };
 
-      const match = input.toLowerCase().match(/^([a-g](#|b)?)[-\s]*(dur|moll)$/i);
+      const match = input.toLowerCase().match(/^([a-g](#|b)?)[-\s]*(dur|moll|maj|min)$/i);
       if (!match) {
         showMessage("Invalid Scale");
         return;
