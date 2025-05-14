@@ -112,27 +112,24 @@
   <svg id="fretboard" width="1100" height="340"></svg>
 
   <!-- Note input field -->
-  <div style="margin-top: 10px;">
+  <div style="margin-top: 10px; display: flex; align-items: center; justify-content: center;"></div>
     <input type="text" id="noteInput" placeholder="Enter a Note (e.g. C, D#, F, ..)"
-      style="width: 250px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px;"
-      onkeypress="if(event.key === 'Enter') highlightNote();">
-    <button onclick="highlightNote()">Show Note</button>
+      style="width: 250px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;">
+    <button style="width: 175px;" onclick="highlightNote()">Show Note</button>
   </div>
 
   <!-- Chord input field -->
-  <div style="margin-top: 10px;"></div>
-  <input type="text" id="chordInput" placeholder="Enter a Chord (e.g. Cmaj, Em7, D#dim, ..)"
-    style="width: 250px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px;"
-    onkeypress="if(event.key === 'Enter') highlightChordNotes();">
-  <button onclick="highlightChordNotes()">Show Chord Notes</button>
+  <div style="margin-top: 10px; display: flex; align-items: center; justify-content: center;">
+    <input type="text" id="chordInput" placeholder="Enter a Chord (e.g. Cmaj, Em7, D#dim, ..)"
+      style="width: 250px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;">
+    <button style="width: 175px;" onclick="highlightChordNotes()">Show Chord Notes</button>
   </div>
 
   <!-- Scale input field -->
-  <div style="margin-top: 10px;">
-    <input type="text" id="scaleInput" placeholder="Enter a Scale(e.g. Cmaj, Amol, ..)"
-      style="width: 250px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px;"
-      onkeypress="if(event.key === 'Enter') highlightScaleNotes();">
-    <button onclick="highlightScaleNotes()">Show Scale Notes</button>
+  <div style="margin-top: 10px; display: flex; align-items: center; justify-content: center;">
+    <input type="text" id="scaleInput" placeholder="Enter a Scale (e.g. Cmaj, Amol, ..)"
+      style="width: 250px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;">
+    <button style="width: 175px;" onclick="highlightScaleNotes()">Show Scale Notes</button>
   </div>
 
   <script>
