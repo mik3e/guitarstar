@@ -523,15 +523,20 @@
 
       const [_, noteRaw, accidental, octaveRaw] = match;
       const note = (noteRaw + (accidental || '')).toUpperCase();
-      const octave = octaveRaw ? parseInt(octaveRaw) : 4;
+      const octave = octaveRaw ? parseInt(octaveRaw) : 0;
 
       const fretboard = getFretboard();
       selected.clear();
       for (let row = 0; row < fretboard.length; row++) {
         for (let col = 0; col < fretboard[row].length; col++) {
           const noteObj = fretboard[row][col];
-          if (noteObj.name === note && noteObj.octave === octave) {
-            selected.add(`${col},${row}`);
+          if (noteObj.name === note){
+            if (octave === 0) {
+              selected.add(`${col},${row}`);
+            }
+            else if (octave === noteObj.octave) {
+              selected.add(`${col},${row}`);
+            }
           }
         }
       }
