@@ -117,13 +117,15 @@
       <!-- Note input field -->
       <div style="margin-bottom: 10px;">
         <input type="text" id="noteInput" placeholder="Enter a Note (e.g. C, D#, F, ..)"
-          style="width: 300px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;">
+          style="width: 300px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;"
+          onkeypress="if(event.key === 'Enter') highlightNote()">
         <button style="width: 150px;" onclick="highlightNote()">Show Note</button>
       </div>
       <!-- Chord input field -->
       <div>
         <input type="text" id="chordInput" placeholder="Enter a Chord (e.g. Cmaj, Em7, D#dim, ..)"
-          style="width: 300px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;">
+          style="width: 300px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;"
+          onkeypress="if(event.key === 'Enter') highlightChordNotes()">
         <button style="width: 150px;" onclick="highlightChordNotes()">Show Chord</button>
       </div>
     </div>
@@ -133,13 +135,15 @@
       <!-- Scale input field -->
       <div style="margin-bottom: 10px;">
         <input type="text" id="scaleInput" placeholder="Enter a Scale (e.g. Cmaj, Amol, ..)"
-          style="width: 300px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;">
+          style="width: 300px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;"
+          onkeypress="if(event.key === 'Enter') highlightScaleNotes()">
         <button style="width: 150px;" onclick="highlightScaleNotes()">Show Scale</button>
       </div>
       <!-- Pentatonic scale input field -->
       <div>
         <input type="text" id="pentatonicInput" placeholder="Enter a Pentatonic (e.g. Cmaj, Amin, ..)"
-          style="width: 300px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;">
+          style="width: 300px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;"
+          onkeypress="if(event.key === 'Enter') highlightPentatonicNotes()">
         <button style="width: 150px;" onclick="highlightPentatonicNotes()">Show Pentatonic</button>
       </div>
     </div>
@@ -370,10 +374,10 @@
             finalColor = shadeColor(color, -35);
           }
 
-          if(isSelected){
-            if(col === 0){
+          if (isSelected) {
+            if (col === 0) {
               finalColor = "turquoise";
-            }else{
+            } else {
               finalColor = "lightgreen";
             }
           }
@@ -497,7 +501,7 @@
       verticalLine1213.setAttribute("y2", 300);
       verticalLine1213.setAttribute("stroke", "black");
       verticalLine1213.setAttribute("stroke-width", "5");
-      svg.appendChild(verticalLine1213);      
+      svg.appendChild(verticalLine1213);
 
       // String End
       const fullStringLengthLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -522,7 +526,13 @@
 
     function highlightNote() {
       const input = document.getElementById("noteInput").value.trim();
-      if (!input) return;
+
+      if (input === "") {
+        selected.clear();
+        drawFretboard();
+        saveState();
+        return;
+      }
 
       const noteRegex = /^([A-G](#|b)?)(\d)?$/i;
       const match = input.match(noteRegex);
@@ -540,7 +550,7 @@
       for (let row = 0; row < fretboard.length; row++) {
         for (let col = 0; col < fretboard[row].length; col++) {
           const noteObj = fretboard[row][col];
-          if (noteObj.name === note){
+          if (noteObj.name === note) {
             if (octave === 0) {
               selected.add(`${col},${row}`);
             }
@@ -557,7 +567,13 @@
 
     function highlightScaleNotes() {
       const input = document.getElementById("scaleInput").value.trim();
-      if (!input) return;
+
+      if (input === "") {
+        selected.clear();
+        drawFretboard();
+        saveState();
+        return;
+      }
 
       const scaleMap = {
         'dur': [0, 2, 4, 5, 7, 9, 11],    // Major scale intervals
@@ -596,6 +612,37 @@
 
       drawFretboard();
       saveState();
+    }
+
+    function highlightChordNotes() {
+      const chord = document.getElementById("chordInput").value.trim();
+
+      if (chord === "") {
+        selected.clear();
+        drawFretboard();
+        saveState();
+        return;
+      }
+
+      const chordNotes = getChordNotes(chord);
+
+      if (Array.isArray(chordNotes)) {
+        selected.clear();
+        const fretboard = getFretboard();
+
+        fretboard.forEach((string, row) => {
+          string.forEach((noteObj, col) => {
+            if (chordNotes.includes(noteObj.name)) {
+              const id = `${col},${row}`;
+              selected.add(id);
+            }
+          });
+        });
+        drawFretboard();
+        saveState();
+      } else {
+        showMessage(chordNotes);
+      }
     }
 
     function toggleOctaves() {
@@ -688,37 +735,6 @@
 
       const formula = chordFormulas[chordType];
       return getNotesForChord(rootIndex, formula);
-    }
-
-    function highlightChordNotes() {
-      const chord = document.getElementById("chordInput").value.trim();
-
-      if (chord === "") {
-        selected.clear();
-        drawFretboard();
-        saveState();
-        return;
-      }
-
-      const chordNotes = getChordNotes(chord);
-
-      if (Array.isArray(chordNotes)) {
-        selected.clear();
-        const fretboard = getFretboard();
-
-        fretboard.forEach((string, row) => {
-          string.forEach((noteObj, col) => {
-            if (chordNotes.includes(noteObj.name)) {
-              const id = `${col},${row}`;
-              selected.add(id);
-            }
-          });
-        });
-        drawFretboard();
-        saveState();
-      } else {
-        showMessage(chordNotes);
-      }
     }
 
     function showMessage(msg) {
