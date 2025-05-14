@@ -96,7 +96,7 @@
   <button onclick="toggleOctaves()">Toggle Octaves</button>
   <button onclick="toggleFrequencies()">Toggle Frequencies</button>
   <button onclick="toggleSharps()">Toggle Sharps</button>
-  <button onclick="toggleFredHighlighting()">Toggle Freds</button>
+  <button onclick="toggleFretHighlighting()">Toggle Frets</button>
 
   <svg onclick="playSelectedNotes()" width="34.2" height="34.2"
     style="cursor: pointer; margin: 7.125px; vertical-align: middle;">
@@ -151,7 +151,7 @@
     const numFrets = 15;
     let showOctaves = true;
     let showSharps = true;
-    let isHighlightFreds = true;
+    let isHighlightFrets = true;
     let useOctaveColorsFlag = true;
     let useNoColorsFlag = false;
     let showFrequencies = true;
@@ -162,7 +162,7 @@
         showOctaves,
         showSharps,
         showFrequencies,
-        isHighlightFreds,
+        isHighlightFrets,
         useOctaveColorsFlag,
         useNoColorsFlag,
         selected: Array.from(selected),
@@ -179,7 +179,7 @@
         showOctaves = state.showOctaves ?? true;
         showSharps = state.showSharps ?? true;
         showFrequencies = state.showFrequencies ?? true;
-        isHighlightFreds = state.isHighlightFreds ?? true;
+        isHighlightFrets = state.isHighlightFrets ?? true;
         useOctaveColorsFlag = state.useOctaveColorsFlag ?? true;
         useNoColorsFlag = state.useNoColorsFlag ?? false;
         selected = new Set(state.selected ?? []);
@@ -356,7 +356,7 @@
 
           let finalColor = color;
           // Darken color slightly for highlighted frets
-          if (highlightedFretNumbers.has(col) && isHighlightFreds) {
+          if (highlightedFretNumbers.has(col) && isHighlightFrets) {
             finalColor = shadeColor(color, -35);
           }
 
@@ -443,15 +443,15 @@
       stringsLabel.textContent = "Strings";
       svg.appendChild(stringsLabel);
 
-      // Add bottom label: "Freds" (centered under fretboard)
-      const fredsLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      fredsLabel.setAttribute("x", xOffset + width / 2);
-      fredsLabel.setAttribute("y", height + 35);
-      fredsLabel.setAttribute("text-anchor", "middle");
-      fredsLabel.setAttribute("font-size", "14");
-      fredsLabel.setAttribute("font-weight", "bold");
-      fredsLabel.textContent = "Freds";
-      svg.appendChild(fredsLabel);
+      // Add bottom label: "Frets" (centered under fretboard)
+      const FretsLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      FretsLabel.setAttribute("x", xOffset + width / 2);
+      FretsLabel.setAttribute("y", height + 35);
+      FretsLabel.setAttribute("text-anchor", "middle");
+      FretsLabel.setAttribute("font-size", "14");
+      FretsLabel.setAttribute("font-weight", "bold");
+      FretsLabel.textContent = "Frets";
+      svg.appendChild(FretsLabel);
 
       // Fret labels
       for (let f = 0; f <= numFrets; f++) {
@@ -460,7 +460,7 @@
         label.setAttribute("y", height + 20);
         label.setAttribute("text-anchor", "middle");
         label.setAttribute("class", "fret-label");
-        if (highlightedFretNumbers.has(f) && isHighlightFreds) {
+        if (highlightedFretNumbers.has(f) && isHighlightFrets) {
           label.setAttribute("font-weight", "bold"); // Make the label bold
           label.setAttribute("stroke", "red"); // Add a blue stroke around the text
           label.setAttribute("stroke-width", "0.5"); // Set stroke width
@@ -595,8 +595,8 @@
       saveState();
     }
 
-    function toggleFredHighlighting() {
-      isHighlightFreds = !isHighlightFreds;
+    function toggleFretHighlighting() {
+      isHighlightFrets = !isHighlightFrets;
       drawFretboard();
       saveState();
     }
