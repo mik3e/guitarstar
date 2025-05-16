@@ -90,7 +90,7 @@
   </style>
 
   <img id="header-image" src="gps5.png" alt="Guitar Periodic System"
-    style="width: 500px; height: auto; margin-top: 00px;">
+    style="width: 550px; height: auto; margin-top: 00px;">
   <br>
 
   <button onclick="toggleOctaves()">Toggle Octaves</button>
@@ -109,6 +109,10 @@
 
   <br>
 
+  <button onclick="switchSharpAndFlat()">Switch # and b</button>
+  
+  <br>
+
   <svg id="fretboard" width="1100" height="340"></svg>
 
   <div style="display: flex; justify-content: center; align-items: flex-start; margin-top: 10px;">
@@ -117,14 +121,14 @@
       <!-- Note input field -->
       <div style="margin-bottom: 10px;">
         <input type="text" id="noteInput" placeholder="Enter a Note (e.g. C, D#, F, ..)"
-          style="width: 300px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;"
+          style="width: 250px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;"
           onkeypress="if(event.key === 'Enter') highlightNote()">
         <button style="width: 150px;" onclick="highlightNote()">Show Note</button>
       </div>
       <!-- Chord input field -->
       <div>
         <input type="text" id="chordInput" placeholder="Enter a Chord (e.g. Cmaj, Em7, D#dim, ..)"
-          style="width: 300px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;"
+          style="width: 250px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;"
           onkeypress="if(event.key === 'Enter') highlightChordNotes()">
         <button style="width: 150px;" onclick="highlightChordNotes()">Show Chord</button>
       </div>
@@ -135,14 +139,14 @@
       <!-- Scale input field -->
       <div style="margin-bottom: 10px;">
         <input type="text" id="scaleInput" placeholder="Enter a Scale (e.g. Cmaj, Amin, ..)"
-          style="width: 300px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;"
+          style="width: 250px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;"
           onkeypress="if(event.key === 'Enter') highlightScaleNotes()">
         <button style="width: 150px;" onclick="highlightScaleNotes()">Show Scale</button>
       </div>
       <!-- Pentatonic scale input field -->
       <div>
         <input type="text" id="pentatonicInput" placeholder="Enter a Pentatonic (e.g. Cmaj, Amin, ..)"
-          style="width: 300px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;"
+          style="width: 250px; background-color: #fbf1db; color: #000; border: 1px solid #888888; border-radius: 5px; padding: 5px; margin-right: 5px;"
           onkeypress="if(event.key === 'Enter') highlightPentatonicNotes()">
         <button style="width: 150px;" onclick="highlightPentatonicNotes()">Show Pentatonic</button>
       </div>
@@ -165,10 +169,11 @@
     const numFrets = 15;
     let showOctaves = true;
     let showSharps = true;
-    let isHighlightFrets = true;
+    let isHighlightFrets = false;
     let useOctaveColorsFlag = true;
     let useNoColorsFlag = false;
     let showFrequencies = true;
+    let isSharpNotation = true; 
     let selected = new Set();
 
     function saveState() {
@@ -179,6 +184,7 @@
         isHighlightFrets,
         useOctaveColorsFlag,
         useNoColorsFlag,
+        isSharpNotation,
         selected: Array.from(selected),
         chordInput: document.getElementById("chordInput").value
       };
@@ -196,6 +202,7 @@
         isHighlightFrets = state.isHighlightFrets ?? true;
         useOctaveColorsFlag = state.useOctaveColorsFlag ?? true;
         useNoColorsFlag = state.useNoColorsFlag ?? false;
+        isSharpNotation = state.isSharpNotation ?? true;
         selected = new Set(state.selected ?? []);
         if (state.chordInput !== undefined) {
           document.getElementById("chordInput").value = state.chordInput;
@@ -205,6 +212,12 @@
         console.error("Failed to load saved state:", e);
       }
     }
+
+    function switchSharpAndFlat(note) {
+      isSharpNotation = !isSharpNotation;
+      drawFretboard();
+      saveState();
+    }    
 
     function playSelectedNotes() {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -395,7 +408,8 @@
             textNote.setAttribute("fill", "brown");
             textNote.setAttribute("font-style", "italic");
           }
-          let labelText = showOctaves ? `${noteObj.name}${noteObj.octave}` : noteObj.name;
+          let noteName = isSharpNotation ? noteObj.name : transformSharpsToFlats(noteObj.name);
+          let labelText = showOctaves ? `${noteName}${noteObj.octave}` : noteName;
           textNote.textContent = !showSharps && noteObj.name.includes('#') ? '' : labelText;
 
           // Frequency label (optional) placed below the note label
@@ -491,7 +505,7 @@
       verticalLine01.setAttribute("y2", 300);
       verticalLine01.setAttribute("stroke", "black");
       verticalLine01.setAttribute("stroke-width", "5");
-      svg.appendChild(verticalLine01);
+      svg.appendChild(verticalLine01); 
 
       // Line between Fret 12 and 13
       const verticalLine1213 = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -524,25 +538,64 @@
       svg.appendChild(halfStringLengthLabel);
     }
 
+    function clearSelectedAndRedraw() {
+      selected.clear();
+      drawFretboard();
+      saveState();
+    }
+
+    function transformSharpsToFlats(note) {
+      const sharpToFlatMap = {
+        'C#': 'Db',
+        'D#': 'Eb',
+        'F#': 'Gb',
+        'G#': 'Ab',
+        'A#': 'Bb',
+        'c#': 'Db',
+        'd#': 'Eb',
+        'f#': 'Gb',
+        'g#': 'Ab',
+        'a#': 'Bb'
+      };
+
+      return sharpToFlatMap[note] || note;
+    }
+
+    function transformFlatsToSharps(note) {
+      const flatToSharpMap = {
+      'db': 'C#',
+      'eb': 'D#',
+      'gb': 'F#',
+      'ab': 'G#',
+      'bb': 'A#',
+      'Db': 'C#',
+      'Eb': 'D#',
+      'Gb': 'F#',
+      'Ab': 'G#',
+      'Bb': 'A#'
+      };
+
+      return flatToSharpMap[note] || note.toUpperCase();
+    }
+
     function highlightNote() {
       const input = document.getElementById("noteInput").value.trim();
 
       if (input === "") {
-        selected.clear();
-        drawFretboard();
-        saveState();
+        clearSelectedAndRedraw();
         return;
       }
 
       const noteRegex = /^([A-G](#|b)?)(\d)?$/i;
       const match = input.match(noteRegex);
+      
       if (!match) {
         showMessage("Invalid Note");
         return;
       }
 
-      const [_, noteRaw, accidental, octaveRaw] = match;
-      const note = (noteRaw + (accidental || '')).toUpperCase();
+      const [, noteRaw, , octaveRaw] = match;
+      const note = transformFlatsToSharps(noteRaw);
       const octave = octaveRaw ? parseInt(octaveRaw) : 0;
 
       const fretboard = getFretboard();
@@ -569,15 +622,15 @@
       const input = document.getElementById("pentatonicInput").value.trim();
 
       if (input === "") {
-      selected.clear();
-      drawFretboard();
-      saveState();
-      return;
+        clearSelectedAndRedraw();
+        return;
       }
 
       const pentatonicMap = {
       'maj': [0, 2, 4, 7, 9],    // Major pentatonic intervals
       'min': [0, 3, 5, 7, 10],   // Minor pentatonic intervals
+      'dur': [0, 2, 4, 7, 9],    // Alias for Major pentatonic
+      'moll': [0, 3, 5, 7, 10],  // Alias for Minor pentatonic
       };
 
       const match = input.toLowerCase().match(/^([a-g](#|b)?)[-\s]*(dur|moll|maj|min)$/i);
@@ -618,15 +671,15 @@
       const input = document.getElementById("scaleInput").value.trim();
 
       if (input === "") {
-        selected.clear();
-        drawFretboard();
-        saveState();
+        clearSelectedAndRedraw();
         return;
       }
 
       const scaleMap = {
         'dur': [0, 2, 4, 5, 7, 9, 11],    // Major scale intervals
         'moll': [0, 2, 3, 5, 7, 8, 10],   // Natural minor scale intervals
+        'maj': [0, 2, 4, 5, 7, 9, 11],    // Alias for Major scale
+        'min': [0, 2, 3, 5, 7, 8, 10],    // Alias for Minor scale
       };
 
       const match = input.toLowerCase().match(/^([a-g](#|b)?)[-\s]*(dur|moll|maj|min)$/i);
@@ -667,9 +720,7 @@
       const chord = document.getElementById("chordInput").value.trim();
 
       if (chord === "") {
-        selected.clear();
-        drawFretboard();
-        saveState();
+        clearSelectedAndRedraw();
         return;
       }
 
