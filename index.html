@@ -546,35 +546,41 @@
 
     function transformSharpsToFlats(note) {
       const sharpToFlatMap = {
-        'C#': 'Db',
-        'D#': 'Eb',
-        'F#': 'Gb',
-        'G#': 'Ab',
-        'A#': 'Bb',
-        'c#': 'Db',
-        'd#': 'Eb',
-        'f#': 'Gb',
-        'g#': 'Ab',
-        'a#': 'Bb'
+      'C#': 'Db',
+      'D#': 'Eb',
+      'F#': 'Gb',
+      'G#': 'Ab',
+      'A#': 'Bb',
+      'B#': 'C',
+      'E#': 'F',
+      'c#': 'Db',
+      'd#': 'Eb',
+      'f#': 'Gb',
+      'g#': 'Ab',
+      'a#': 'Bb',
+      'b#': 'C',
+      'e#': 'F',
       };
-
       return sharpToFlatMap[note] || note;
-    }
+    }    
 
     function transformFlatsToSharps(note) {
       const flatToSharpMap = {
+      'cb': 'B',
+      'fb': 'E',
       'db': 'C#',
       'eb': 'D#',
       'gb': 'F#',
       'ab': 'G#',
       'bb': 'A#',
+      'Cb': 'B',
+      'Fb': 'E',
       'Db': 'C#',
       'Eb': 'D#',
       'Gb': 'F#',
       'Ab': 'G#',
       'Bb': 'A#'
       };
-
       return flatToSharpMap[note] || note.toUpperCase();
     }
 
