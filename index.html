@@ -601,7 +601,7 @@
       }
 
       const [, noteRaw, , octaveRaw] = match;
-      const note = transformFlatsToSharps(noteRaw);
+      const note = transformFlatsToSharps(transformSharpsToFlats(noteRaw));
       const octave = octaveRaw ? parseInt(octaveRaw) : 0;
 
       const fretboard = getFretboard();
